@@ -62,17 +62,29 @@ procedure Timetracker is
    begin
       Create(File, Out_File, Name);
       fileaccess := Stream(File);
-      Track_Record'Write(fileaccess, track);
+      for T in records'Range loop
+         if (records (T).Hours /= -1) then
+            Track_Record'Write (fileaccess, records (T));
+         end if;
+      end loop;
       Close(File);
    end Save_Records_To_File;
 
 
+   procedure Get_New_Track is
+   begin
+      Put_Line("What are you tracking? ");
+      track.Name := Get_Line;
+      track.Date := Clock;
+      Put_Line ("How many hours have you done? ");
+      track.Hours := Integer'Value (Get_Line);
+      records (counter) := track;
+   end Get_New_Track;
+
+
 begin
-   Put_Line("What are you tracking? ");
-   track.Name := Get_Line;
-   track.Date := Clock;
-   Put_Line("How many hours have you done? ");
-   track.Hours := Integer'Value(Get_Line);
-   Output_Track_Record(track);
-   Save_Records_To_File(filehandle, "trackingdb");
+   if (Exists (track_file)) then
+      Read_In_Records (filehandle, track_file);
+   end if;
+   Save_Records_To_File(filehandle, track_file);
 end Timetracker;
