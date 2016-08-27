@@ -15,26 +15,26 @@ use Ada.Directories, Ada.Streams.Stream_IO;
 procedure Timetracker is
    type Track_Record is
       record
-         Name : Unbounded_String;
-         Date : Time;
-         Hours : Integer;
+         Name: Unbounded_String;
+         Date: Time;
+         Hours: Integer;
       end record;
    type Record_Array is array(1..100) of Track_Record;
 
-   filehandle : Ada.Streams.Stream_IO.File_Type;
-   fileaccess : Ada.Streams.Stream_IO.Stream_Access;
+   filehandle: Ada.Streams.Stream_IO.File_Type;
+   fileaccess: Ada.Streams.Stream_IO.Stream_Access;
 
    --application logic variables
-   track : Track_Record;
-   records : Record_Array := Record_Array'(others =>
+   track: Track_Record;
+   records: Record_Array := Record_Array'(others =>
                                              (Hours => -1,
                                               Name => To_Unbounded_String(""),
                                               Date => Clock)
                                           );
-   counter : Natural := 1;
-   track_file : String := "trackingdb";
+   counter: Natural := 1;
+   track_file: String := "trackingdb";
 
-   procedure Output_Track_Record(track : in Track_Record) is
+   procedure Output_Track_Record(track: in Track_Record) is
    begin
       Put_Line(track.Name);
       Put_Line(Image(Date => track.Date));
@@ -42,8 +42,8 @@ procedure Timetracker is
       New_Line;
    end Output_Track_Record;
 
-   procedure Read_In_Records(File : in out Ada.Streams.Stream_IO.File_Type;
-                             Name : in String) is
+   procedure Read_In_Records(File: in out Ada.Streams.Stream_IO.File_Type;
+                             Name: in String) is
    begin
       Open(File, In_File, Name);
       fileaccess := Ada.Streams.Stream_IO.Stream(File);
@@ -57,8 +57,8 @@ procedure Timetracker is
    end Read_In_Records;
 
 
-   procedure Save_Records_To_File(File : in out Ada.Streams.Stream_IO.File_Type;
-                                  Name : in String ) is
+   procedure Save_Records_To_File(File: in out Ada.Streams.Stream_IO.File_Type;
+                                  Name: in String ) is
    begin
       Create(File, Out_File, Name);
       fileaccess := Stream(File);
