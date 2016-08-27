@@ -21,8 +21,7 @@ procedure Timetracker is
       end record;
    track : Track_Record;
 
-   filehandle : Ada.Streams.Stream_IO.File_Type;
-   fileaccess : Ada.Streams.Stream_IO.Stream_Access;
+   type Record_Array is array(1..100) of Track_Record;
 
    procedure Save_Records_To_File(File : in out Ada.Streams.Stream_IO.File_Type;
                                   Name : in String ) is
@@ -41,11 +40,23 @@ procedure Timetracker is
       New_Line;
    end Output_Track_Record;
 
+   filehandle : Ada.Streams.Stream_IO.File_Type;
+   fileaccess : Ada.Streams.Stream_IO.Stream_Access;
+
+   --application logic variables
+   records : Record_Array := Record_Array'(others =>
+                                             (Hours => -1,
+                                              Name => To_Unbounded_String(""),
+                                              Date => Clock)
+                                          );
+   counter : Natural := 1;
+   track_file : String := "trackingdb";
+
 begin
    Put_Line("What are you tracking? ");
    track.Name := Get_Line;
    track.Date := Clock;
-   Put_Line("How mane hours have you done? ");
+   Put_Line("How many hours have you done? ");
    track.Hours := Integer'Value(Get_Line);
    Output_Track_Record(track);
    Save_Records_To_File(filehandle, "trackingdb");
