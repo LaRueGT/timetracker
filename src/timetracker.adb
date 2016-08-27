@@ -19,9 +19,43 @@ procedure Timetracker is
          Date : Time;
          Hours : Integer;
       end record;
-   track : Track_Record;
-
    type Record_Array is array(1..100) of Track_Record;
+
+   filehandle : Ada.Streams.Stream_IO.File_Type;
+   fileaccess : Ada.Streams.Stream_IO.Stream_Access;
+
+   --application logic variables
+   track : Track_Record;
+   records : Record_Array := Record_Array'(others =>
+                                             (Hours => -1,
+                                              Name => To_Unbounded_String(""),
+                                              Date => Clock)
+                                          );
+   counter : Natural := 1;
+   track_file : String := "trackingdb";
+
+   procedure Output_Track_Record(track : in Track_Record) is
+   begin
+      Put_Line(track.Name);
+      Put_Line(Image(Date => track.Date));
+      Put_Line(Item => Integer'Image(track.Hours));
+      New_Line;
+   end Output_Track_Record;
+
+   procedure Read_In_Records(File : in out Ada.Streams.Stream_IO.File_Type;
+                             Name : in String) is
+   begin
+      Open(File, In_File, Name);
+      fileaccess := Ada.Streams.Stream_IO.Stream(File);
+      While not End_Of_File(File) loop
+         Track_Record'Read(fileaccess, track);
+         Output_Track_Record(track);
+         records(counter) := track;
+         counter := counter +1;
+      end loop;
+      Close(File);
+   end Read_In_Records;
+
 
    procedure Save_Records_To_File(File : in out Ada.Streams.Stream_IO.File_Type;
                                   Name : in String ) is
@@ -32,25 +66,6 @@ procedure Timetracker is
       Close(File);
    end Save_Records_To_File;
 
-   procedure Output_Track_Record(track : in Track_Record) is
-   begin
-      Put_Line(track.Name);
-      Put_Line(Image(Date => track.Date));
-      Put_Line(Item => Integer'Image(track.Hours));
-      New_Line;
-   end Output_Track_Record;
-
-   filehandle : Ada.Streams.Stream_IO.File_Type;
-   fileaccess : Ada.Streams.Stream_IO.Stream_Access;
-
-   --application logic variables
-   records : Record_Array := Record_Array'(others =>
-                                             (Hours => -1,
-                                              Name => To_Unbounded_String(""),
-                                              Date => Clock)
-                                          );
-   counter : Natural := 1;
-   track_file : String := "trackingdb";
 
 begin
    Put_Line("What are you tracking? ");
