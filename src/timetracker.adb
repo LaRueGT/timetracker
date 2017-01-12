@@ -12,6 +12,7 @@ use Ada.Text_IO;
 use Ada.Strings.Unbounded, Ada.Strings.Unbounded.Text_IO;
 use Ada.Directories, Ada.Streams.Stream_IO;
 
+--trying some things out
 procedure Timetracker is
    type Track_Record is
       record
